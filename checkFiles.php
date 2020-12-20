@@ -11,15 +11,16 @@ if (isset($_GET["student_id"]) && $_GET["student_id"] != "") {
 
 $dir = "../students/" .  $student_id;
 
-if (checkFiles($dir)){
+if (checkFiles($dir)) {
     $result = 1;
 }
 
-function checkFiles($dir){
+function checkFiles($dir)
+{
     $results = false;
-    if (is_dir($dir)){
+    if (is_dir($dir)) {
         $objects = scandir($dir);
-        if (count($objects) > 0){
+        if (count($objects) > 0) {
             $results = true;
         }
     }
@@ -28,4 +29,5 @@ function checkFiles($dir){
 
 
 echo json_encode(array("answer" => $result));
+
 ?>

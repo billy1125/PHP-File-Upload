@@ -40,7 +40,7 @@ function getFiles() {
  *
  * @return 回傳存放目錄 + md5 產生的檔案名稱 + 擴展名
  */
-function uploadFile($fileInfo, $allowExt = array('zip'), $maxSize = 20971520, $flag = false, $uploadPath = '../uploads') {
+function uploadFile($fileInfo, $student_id, $allowExt = array('zip'), $maxSize = 20971520, $flag = false, $uploadPath = 'temp') {
     // 存放錯誤訊息
     $res = array();
 
@@ -49,7 +49,7 @@ function uploadFile($fileInfo, $allowExt = array('zip'), $maxSize = 20971520, $f
 
     // 確保檔案名稱唯一，防止重覆名稱產生覆蓋
     $uniName = md5(uniqid(microtime(true), true)) . '.' . $ext;
-    $destination = $uploadPath . '/' . $uniName;
+    $destination = $uploadPath . '/' . $student_id . '_' . $uniName;
     
     // 判斷是否有錯誤
     if ($fileInfo['error'] > 0) {

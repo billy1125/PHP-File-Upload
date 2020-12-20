@@ -8,6 +8,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
+$student_id = htmlspecialchars($_SESSION["student_id"]);
+$username = htmlspecialchars($_SESSION["username"]);
+$admin = htmlspecialchars($_SESSION["admin"]);
+
 // Include config file
 require_once "config.php";
 
@@ -90,10 +94,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
     <div class="container">
-        <h2><b><?php echo htmlspecialchars($_SESSION["username"]); ?></b> 同學你好！<a href="logout.php" class="btn btn-danger">登出</a></h2>
+        <h2><b><?php echo $username; ?></b> 同學你好！<a href="logout.php" class="btn btn-danger">登出</a></h2>
         <ul class="nav nav-tabs">
             <li><a href="upload.php">Home</a></li>
+            <li><a href="all_work.php">作品展覽</a></li>
             <li class="active"><a href="reset-password.php">重設密碼</a></li>
+            <li><a href="upload_info.php">作業上傳須知</a></li>
         </ul>
         <div class="row">
 

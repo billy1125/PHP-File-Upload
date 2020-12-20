@@ -16,75 +16,79 @@ require_once "config.php";
 $username = $password = "";
 $username_err = $password_err = "";
 
-// Processing form data when form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+try {
+    // Processing form data when form is submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Check if username is empty
-    if (empty(trim($_POST["username"]))) {
-        $username_err = "請輸入帳號";
-    } else {
-        $username = trim($_POST["username"]);
-    }
-
-    // Check if password is empty
-    if (empty(trim($_POST["password"]))) {
-        $password_err = "請輸入密碼";
-    } else {
-        $password = trim($_POST["password"]);
-    }
-
-    // Validate credentials
-    if (empty($username_err) && empty($password_err)) {
-        // Prepare a select statement
-        $sql = "SELECT id, student_name, student_id, password FROM students WHERE student_id = ?";
-
-        if ($stmt = mysqli_prepare($link, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_username);
-
-            // Set parameters
-            $param_username = $username;
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Store result
-                mysqli_stmt_store_result($stmt);
-
-                // Check if username exists, if yes then verify password
-                if (mysqli_stmt_num_rows($stmt) == 1) {
-                    // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $student_name, $student_id, $get_password);
-                    if (mysqli_stmt_fetch($stmt)) {
-                        //if (password_verify($password, $get_password)) {
-                        if ($password == $get_password) {
-                            // Password is correct, so start a new session
-                            session_start();
-
-                            // Store data in session variables
-                            $_SESSION["loggedin"] = true;
-                            $_SESSION["id"] = $id;
-                            $_SESSION["username"] = $student_name;
-                            $_SESSION["student_id"] = $student_id;
-                            // Redirect user to welcome page
-                            header("location: upload.php");
-                        } else {
-                            // Display an error message if password is not valid
-                            $password_err = "密碼有誤";
-                        }
-                    }
-                } else {
-                    // Display an error message if username doesn't exist
-                    $username_err = "沒有這個帳號";
-                }
-            } else {
-                echo "有錯誤，請與卓勳老師聯絡";
-            }
+        // Check if username is empty
+        if (empty(trim($_POST["username"]))) {
+            $username_err = "請輸入帳號";
+        } else {
+            $username = trim($_POST["username"]);
         }
 
-        // Close statement
-        mysqli_stmt_close($stmt);
-    }
+        // Check if password is empty
+        if (empty(trim($_POST["password"]))) {
+            $password_err = "請輸入密碼";
+        } else {
+            $password = trim($_POST["password"]);
+        }
 
+        // Validate credentials
+        if (empty($username_err) && empty($password_err)) {
+            // Prepare a select statement
+            $sql = "SELECT id, student_name, student_id, password, admin FROM students WHERE student_id = ?";
+
+            if ($stmt = mysqli_prepare($link, $sql)) {
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt, "s", $param_username);
+
+                // Set parameters
+                $param_username = $username;
+
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt)) {
+                    // Store result
+                    mysqli_stmt_store_result($stmt);
+
+                    // Check if username exists, if yes then verify password
+                    if (mysqli_stmt_num_rows($stmt) == 1) {
+                        // Bind result variables
+                        mysqli_stmt_bind_result($stmt, $id, $student_name, $student_id, $get_password, $admin);
+                        if (mysqli_stmt_fetch($stmt)) {
+                            //if (password_verify($password, $get_password)) {
+                            if ($password == $get_password) {
+                                // Password is correct, so start a new session
+                                session_start();
+
+                                // Store data in session variables
+                                $_SESSION["loggedin"] = true;
+                                $_SESSION["id"] = $id;
+                                $_SESSION["username"] = $student_name;
+                                $_SESSION["student_id"] = $student_id;
+                                $_SESSION["admin"] = $admin;
+                                // Redirect user to welcome page
+                                header("location: upload.php");
+                            } else {
+                                // Display an error message if password is not valid
+                                $password_err = "密碼有誤";
+                            }
+                        }
+                    } else {
+                        // Display an error message if username doesn't exist
+                        $username_err = "沒有這個帳號";
+                    }
+                }
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
+    }
+} catch (Exception $e) {
+    echo "Exception" . $e->getCode() . ": " . $e->getMessage() . "<br />" .
+        " in " . $e->getFile() . " on line " . $e->getLine() . "<br />";
+} finally {
     // Close connection
     mysqli_close($link);
 }

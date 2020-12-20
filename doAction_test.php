@@ -12,7 +12,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-$student_id = (empty($_REQUEST['student_id'])) ? "" : $_REQUEST['student_id']; 
+$student_id = (empty($_REQUEST['student_id'])) ? "" : $_REQUEST['student_id'];
 
 /**
  * 表單接收頁面
@@ -28,7 +28,7 @@ $files = getFiles();
 // 依上傳檔案數執行
 foreach ($files as $fileInfo) {
     // 呼叫封裝好的 function
-    $res = uploadFile($fileInfo);
+    $res = uploadFile($fileInfo, $student_id);
 
     // 顯示檔案上傳訊息
     //echo $res['mes'] . '<br>';
@@ -41,7 +41,7 @@ foreach ($files as $fileInfo) {
 
 $upzip_loaction = '../students/' . $student_id;
 
-if (checkFiles($upzip_loaction)){
+if (checkFiles($upzip_loaction)) {
     rrmdir($upzip_loaction);
 }
 
@@ -49,7 +49,8 @@ require_once "insertFileUploadRecord.php";
 $result = unzip($uploadFiles[0], $upzip_loaction);
 
 //zip解壓縮
-function unzip($zipfile, $upzip_loaction){
+function unzip($zipfile, $upzip_loaction)
+{
     $result = 0;
     $zip = new ZipArchive;
     $res = $zip->open($zipfile);
@@ -61,19 +62,22 @@ function unzip($zipfile, $upzip_loaction){
         $result = 2;
     }
 
+    //deleteOneFile($zipfile);
+
     return $result;
 }
 
 // 特定檔案夾下所有檔案與檔案夾刪除
-function rrmdir($dir) {
+function rrmdir($dir)
+{
     if (is_dir($dir)) {
         $objects = scandir($dir);
         foreach ($objects as $object) {
             if ($object != "." && $object != "..") {
-                if (filetype($dir."/".$object) == "dir") 
-                    rrmdir($dir."/".$object); 
+                if (filetype($dir . "/" . $object) == "dir")
+                    rrmdir($dir . "/" . $object);
                 else
-                    unlink($dir."/".$object);
+                    unlink($dir . "/" . $object);
             }
         }
         reset($objects);
@@ -82,16 +86,23 @@ function rrmdir($dir) {
 }
 
 // 確認是不是有檔案
-function checkFiles($dir){
+function checkFiles($dir)
+{
     $results = false;
-    if (is_dir($dir)){
+    if (is_dir($dir)) {
         $objects = scandir($dir);
-        if (count($objects) > 0){
+        if (count($objects) > 0) {
             $results = true;
         }
     }
     return $results;
 }
 
+function deleteOneFile($file_path)
+{
+    if (file_exists($file_path)) {
+        unlink($file_path);
+    }
+}
+
 echo json_encode(array("answer" => $result));
-?>

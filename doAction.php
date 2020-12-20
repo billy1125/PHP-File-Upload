@@ -87,6 +87,3 @@ function checkFiles($dir){
     }
     return $results;
 }
-
-
-?>

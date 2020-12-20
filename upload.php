@@ -8,7 +8,9 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-
+$student_id = htmlspecialchars($_SESSION["student_id"]);
+$username = htmlspecialchars($_SESSION["username"]);
+$admin = htmlspecialchars($_SESSION["admin"]);
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +26,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script type="text/JavaScript">
-        const student_id = <?php echo htmlspecialchars($_SESSION["student_id"]); ?>;
+        const student_id = <?php echo $student_id; ?>;
+        const is_admin = '<?php echo $admin; ?>';
     </script>
     <script src="js/upload.js"></script>
 
@@ -38,11 +41,14 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     </div>
 
     <div class="container">
-        <h2><b><?php echo htmlspecialchars($_SESSION["username"]); ?></b> 同學你好！<a href="logout.php" class="btn btn-danger">登出</a></h2>
+        <h2><b><?php echo $username; ?></b> 同學你好！<a href="logout.php" class="btn btn-danger">登出</a></h2>
 
         <ul class="nav nav-tabs">
             <li class="active"><a href="#">Home</a></li>
+            <li><a href="all_work.php">作品展覽</a></li>
             <li><a href="reset-password.php">重設密碼</a></li>
+            <li><a href="upload_info.php">作業上傳須知</a></li>
+            <li><a href="students.php" style="display:none" id="students_data">學生資料清單</a></li>
         </ul>
         <div class="row">
             <div class="col-md-6">
@@ -76,11 +82,12 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                     <div class="form-group">
                         <!-- <button type="submit" class="btn btn-primary">上傳檔案</button> -->
                         <a href="#" class="btn btn-primary" id="btn-file-uploader">上傳檔案</a>
+                        <!-- <a href="#" class="btn btn-light" >上傳檔案(2020.12.04開放)</a> -->
                         <span class="help-block">檔案上傳僅限zip檔，大小僅限20mb以內</span>
                     </div>
                     <!-- <div class="alert alert-success" style="display:none" id="upload_results">
                         <h1><strong>Success!</strong> 你已經上傳成功！</h1>
-                        <p>你可以看看你的網站內容：<a href=<?php echo '../students/' . htmlspecialchars($_SESSION["student_id"]); ?> class="btn btn-success">你的網頁</a></p>
+                        <p>你可以看看你的網站內容：<a href=<?php echo '../students/' . $student_id; ?> class="btn btn-success">你的網頁</a></p>
                     </div> -->
                 </form>
                 <h3>說明</h3>

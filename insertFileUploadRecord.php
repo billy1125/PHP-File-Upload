@@ -1,13 +1,14 @@
 <?php
 
-if ($student_id != ""){
+if ($student_id != "") {
     // Include config file
     require_once "config.php";
     insert_file_upload_record($link, $student_id);
 }
 
 
-function insert_file_upload_record($link, $student_id){
+function insert_file_upload_record($link, $student_id)
+{
     // Define variables and initialize with empty values
     $student_id_err = "";
 
@@ -40,5 +41,3 @@ function insert_file_upload_record($link, $student_id){
     // Close connection
     mysqli_close($link);
 }
-
-?>
